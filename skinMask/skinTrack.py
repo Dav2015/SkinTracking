@@ -12,23 +12,30 @@ Rnorm=None
 Gnorm=None
 
 def calcRGnorm(square):
+    cv2.imshow("crop",square)
+    cv2.waitKey(0)
     global Rnorm
     global Gnorm
     """Obter a pele"""
 #    converter para RG norm
-    showImgFromMemory(square)
+    #showImgFromMemory(square)
     
     b,g,r = cv2.split(square)
+    
+    
 #    print(r)
 
 #    normalizacao     
-    r=r.astype(int)
-    g=g.astype(int)
-    b=b.astype(int)
+    r=r.astype(float)
+    g=g.astype(float)
+    b=b.astype(float)
+    
+    print(r)
     
     RnormArr=r/(r+g+b)
     GnormArr=g/(r+g+b)
-#    print(RnormArr)
+    
+    #print(GnormArr)  
     
     RnormArr=np.around(RnormArr, decimals=3)
     GnormArr=np.around(GnormArr, decimals=3)
@@ -36,12 +43,9 @@ def calcRGnorm(square):
     Rnorm=np.mean(RnormArr.ravel())
     Gnorm=np.mean(GnormArr.ravel())
     
-    print(Rnorm)
-    print(Gnorm)
-
 #    para mostrar imagens em memoria
 def showImgFromMemory(image, name = ""):
-    cv2.imshow("Image "+name,image)
+    cv2.imshow("Image " + name,image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
@@ -67,7 +71,7 @@ def skinTrackRG(img):
     skinG = cv2.inRange(GnormArr,Gnorm-0.05,Gnorm+0.05)
     skinR = cv2.inRange(RnormArr,Rnorm-0.05,Rnorm+0.05)
     
-#    cv2.imshow("G",skinG)
+    cv2.imshow("G",skinG)
 #    cv2.imshow("R",skinR)
     
     skin=cv2.bitwise_and(skinG,skinR)
@@ -82,7 +86,7 @@ def skinTrackRG(img):
     kernel =cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(10,10))
     closing = cv2.morphologyEx(dilate, cv2.MORPH_CLOSE, kernel)
     
-#    cv2.imshow("skinTrackRG",closing)
+    cv2.imshow("skinTrackRG",closing)
     return closing 
 
 # Funcao nao e usada, serve para seguir a pele usando HSV

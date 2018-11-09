@@ -7,15 +7,15 @@ import goodFeuturesTrack.track as track
 import goodFeuturesTrack.caracteristics as caracte
 
 def sequence():
-    global frame
     vid = cv2.VideoCapture(0)
     ret,lastSkinImage=vid.read()     
     while(True):
         # Capture frame-by-frame
-        ret, frame= vid.read()     
+        ret, frame = vid.read()
         """so corre e o frame estiver todo construido"""
         if ret == True:
             skinMask=skin.skinTrackRG(frame)
+            
             """aplicar  a mascara a imagem  """     
             skinImage=putMaskToBGRImage(frame,skinMask) 
             good_old,good_new=track.calcFeatures(skinImage.copy(),lastSkinImage.copy())
@@ -40,33 +40,38 @@ def setup():
     vid = cv2.VideoCapture(0)
     font = cv2.FONT_HERSHEY_SIMPLEX
     while True:
-        ret,frame=vid.read()
+        ret,frame = vid.read()
+        
         centerX=int(frame.shape[0]/2)
         centerY=int(frame.shape[1]/2)
         if ret==True:
-            frame=cv2.rectangle(frame,(centerX,centerY-150),(centerX+100,centerY-100),(255,255,255),3)
-            crop_img = frame[centerY-150:centerY-100,centerX:centerX+100]
-            cv2.putText(frame,'Coloque pele no quadrado',(100,50), font, 1,(255,255,255),2,cv2.LINE_AA)
+            
+            cv2.rectangle(frame,(centerX,centerY-150),
+                          (centerX+100,centerY-100),(255,255,255),3)
+            
+            cv2.putText(frame,'Coloque pele no quadrado',
+                        (100,50), font, 1,(255,255,255),2)
+            
             cv2.imshow("setup",frame)
+            
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            skin.calcRGnorm(crop_img)
-#            print(crop_img.shape)
-#            cv2.imshow("crop",crop_img)
+            crop_img = frame[centerY-150:centerY-100,
+                             centerX:centerX+100]
+            
+            skin.calcRGnorm(crop_img.copy())
+            #print(crop_img.shape)
+            cv2.imshow("crop",crop_img)
             break
     # When everything done, release the capture
     vid.release()
     cv2.destroyAllWindows()
-        
-    
+            
 def putMaskToBGRImage(img, mask):
     """aplicar mascara binaria a uma imagem BGR"""
     justHand = cv2.bitwise_and(img,img,mask=mask)
     #cv2.imshow("hand",justHand)
     return justHand
     
-
-
-if __name__ == "__main__":
-    setup()
-    sequence()
+setup()
+sequence()
     

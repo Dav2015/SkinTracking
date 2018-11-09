@@ -1,3 +1,5 @@
-# SkinTracking
+# SkinTracking 
+python 3 and openvc3
 University project.
-Were a ball follow the hand.
+Ball follow the hand, and extracting caracteristics for classifying right,left,up down, movement and zoom in and zoom out.
+
